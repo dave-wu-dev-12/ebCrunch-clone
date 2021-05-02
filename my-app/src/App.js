@@ -1,19 +1,23 @@
-import logo from "./logo.svg";
 import "./App.css";
-import styled, {
-  css,
-  ThemeProvider,
-  createGlobalStyle,
-} from "styled-components";
+import { ThemeProvider, createGlobalStyle } from "styled-components";
 import { useState } from "react";
-
 import storage from "local-storage-fallback";
+import {
+  Header,
+  HeaderContainer,
+  HeaderBlockItem,
+  HeaderLogoText,
+  HeaderSmallLogoText,
+  HeaderThemeModeButtom,
+} from "./Header/Header";
+import OfflineBoltIcon from "@material-ui/icons/OfflineBolt";
+import LockIcon from "@material-ui/icons/Lock";
 
 // initial theme object for our theme state
 const initialTheme = {
   mode: "dark",
   darkModeColor: "black",
-  lightModeColor: "wheat",
+  lightModeColor: "white",
 };
 
 // global style values like the body etc
@@ -57,8 +61,21 @@ function App() {
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <div className="App">
-        <div>Energy bill cruncher</div>
-        <button onClick={() => setAppTheme()}>Toggle Mode</button>
+        <HeaderContainer>
+          <Header>
+            <HeaderBlockItem>
+              <OfflineBoltIcon></OfflineBoltIcon>
+              <HeaderLogoText>EnergyBillCruncher</HeaderLogoText>
+            </HeaderBlockItem>
+            <HeaderBlockItem>
+              <LockIcon></LockIcon>
+              <HeaderSmallLogoText>Secure Form</HeaderSmallLogoText>
+              <HeaderThemeModeButtom onClick={() => setAppTheme()}>
+                Toggle Theme
+              </HeaderThemeModeButtom>
+            </HeaderBlockItem>
+          </Header>
+        </HeaderContainer>
       </div>
     </ThemeProvider>
   );
