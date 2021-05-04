@@ -12,6 +12,18 @@ import {
 } from "./Header/Header";
 import OfflineBoltIcon from "@material-ui/icons/OfflineBolt";
 import LockIcon from "@material-ui/icons/Lock";
+import {
+  ZipcodeContainer,
+  WelcomeTextContainer,
+  WelcomeTextHeader,
+  WelcomeTextInstruction,
+  ZipCodeFormContainer,
+  ZipCodeFormHeader,
+  ZipCodeFormSubHeader,
+  ZipCodeFormSubmit,
+  ZipCodeForm,
+} from "./Zipcode/Zipcode";
+import TextField from "@material-ui/core/TextField";
 
 // initial theme object for our theme state
 const initialTheme = {
@@ -76,6 +88,33 @@ function App() {
             </HeaderBlockItem>
           </Header>
         </HeaderContainer>
+        <ZipcodeContainer>
+          <WelcomeTextContainer>
+            <WelcomeTextHeader>
+              Save On Your Monthly Electric Bill With Affordable Solar Energy
+            </WelcomeTextHeader>
+            <WelcomeTextInstruction>
+              Enter basic information to see if your home is eligible!
+            </WelcomeTextInstruction>
+          </WelcomeTextContainer>
+          <ZipCodeFormContainer>
+            <ZipCodeForm>
+              <ZipCodeFormHeader>FREE Expert Solar Quote</ZipCodeFormHeader>
+              <ZipCodeFormSubHeader>
+                See if you qualify for incentives in your area and get solar
+                with zero upfront costs!
+              </ZipCodeFormSubHeader>
+
+              <TextField
+                id="outlined-basic"
+                label="Enter Zip Code"
+                variant="outlined"
+                style={{ width: "100%" }}
+              />
+              <ZipCodeFormSubmit>Free Quote</ZipCodeFormSubmit>
+            </ZipCodeForm>
+          </ZipCodeFormContainer>
+        </ZipcodeContainer>
       </div>
     </ThemeProvider>
   );
