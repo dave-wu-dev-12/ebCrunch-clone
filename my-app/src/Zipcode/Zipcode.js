@@ -18,6 +18,7 @@ const WelcomeTextContainer = styled.div`
   flex-direction: column;
   width: 45%;
   padding: 1em;
+  box-sizing: border-box;
   @media (max-width: 500px) {
     width: 100%;
   }
