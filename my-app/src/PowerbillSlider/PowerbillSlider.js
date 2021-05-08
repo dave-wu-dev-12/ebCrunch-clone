@@ -6,6 +6,7 @@ const PowerbillContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 3em 0;
 `;
 
 const PowerbillHeader = styled.h1`

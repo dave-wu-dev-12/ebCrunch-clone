@@ -4,10 +4,9 @@ const ZipcodeContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 2.5em;
   max-width: 2000px;
   margin: 0 auto;
-  padding-top: 3em;
+  padding: 3em 0;
   @media (max-width: 500px) {
     flex-direction: column;
   }

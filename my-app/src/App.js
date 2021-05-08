@@ -30,12 +30,21 @@ import {
   PowerbillButton,
   PowerbillSubHeader,
 } from "./PowerbillSlider/PowerbillSlider";
+import {
+  HomeownerContainer,
+  HomeownerHeader,
+  HomeownerSelectionContainer,
+  Homeowner,
+} from "./Homeowner/Homeowner";
+import { ErrorMessageText } from "./Error/Error";
 import OfflineBoltIcon from "@material-ui/icons/OfflineBolt";
 import LockIcon from "@material-ui/icons/Lock";
 import TextField from "@material-ui/core/TextField";
 import { VIEWS } from "./Assets/Views";
 import { makeStyles } from "@material-ui/core/styles";
 import Slider from "@material-ui/core/Slider";
+import CheckIcon from "@material-ui/icons/Check";
+import ClearIcon from "@material-ui/icons/Clear";
 
 const useStyles = makeStyles({
   root: {
@@ -66,41 +75,6 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
   const classes = useStyles();
-
-  // this can go either outside or inside the funciton app
-  // it just has to be before the useState
-  const getInitialTheme = () => {
-    let storageTheme = storage.getItem("appTheme");
-    return storageTheme ? JSON.parse(storageTheme) : initialTheme;
-  };
-
-  // usestate will call the get initial func once during the intial load render
-  // so we can skip the use effect here in lieu of this
-  const [theme, setTheme] = useState(getInitialTheme);
-
-  const setAppTheme = () => {
-    let chosenTheme =
-      theme.mode == "dark"
-        ? { ...theme, mode: "light" }
-        : { ...theme, mode: "dark" };
-
-    storage.setItem("appTheme", JSON.stringify(chosenTheme));
-
-    setTheme(chosenTheme);
-  };
-
-  const [zipCode, setZipCode] = useState("");
-  const [viewToShow, setViewToShow] = useState(VIEWS.zipcode);
-  const [powerBillValue, setPowerBillValue] = useState("0");
-
-  const numbersOnly = (value) => {
-    let reg = /^\d+$/;
-    if (reg.test(value)) setZipCode(value);
-  };
-
-  const submitZipcode = () => {
-    setViewToShow(VIEWS.powerBill);
-  };
 
   const valuetext = (value) => {
     let powerBillvalue = "";
@@ -134,6 +108,60 @@ function App() {
     return `${value}`;
   };
 
+  // this can go either outside or inside the funciton app
+  // it just has to be before the useState
+  const getInitialTheme = () => {
+    let storageTheme = storage.getItem("appTheme");
+    return storageTheme ? JSON.parse(storageTheme) : initialTheme;
+  };
+
+  // usestate will call the get initial func once during the intial load render
+  // so we can skip the use effect here in lieu of this
+  const [theme, setTheme] = useState(getInitialTheme);
+
+  const setAppTheme = () => {
+    let chosenTheme =
+      theme.mode == "dark"
+        ? { ...theme, mode: "light" }
+        : { ...theme, mode: "dark" };
+
+    storage.setItem("appTheme", JSON.stringify(chosenTheme));
+
+    setTheme(chosenTheme);
+  };
+
+  const [zipCode, setZipCode] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [viewToShow, setViewToShow] = useState(VIEWS.zipcode);
+  const [powerBillValue, setPowerBillValue] = useState("0");
+
+  const numbersOnly = (value) => {
+    let reg = /^\d+$/;
+    if (reg.test(value) && value.length < 6) setZipCode(value);
+  };
+
+  const submitZipcode = () => {
+    if (zipCode.length != 5) {
+      setErrorMessage("Invalid zipcode");
+    } else {
+      setErrorMessage("");
+      setViewToShow(VIEWS.powerBill);
+    }
+  };
+
+  const submitPowerbill = () => {
+    setViewToShow(VIEWS.homeOwner);
+  };
+
+  const sumbitHomeowner = (selection) => {
+    if (selection == "no") {
+      setErrorMessage("Sorry, you must be a homeowner to qualify");
+    } else {
+      setErrorMessage("");
+    }
+  };
+
   let formContentHandler = null;
   switch (viewToShow) {
     case VIEWS.powerBill:
@@ -153,10 +181,42 @@ function App() {
               max={800}
             />
           </div>
-          <PowerbillButton>Continue</PowerbillButton>
+          <PowerbillButton onClick={() => submitPowerbill()}>
+            Continue
+          </PowerbillButton>
         </PowerbillContainer>
       );
       break;
+
+    case VIEWS.homeOwner:
+      formContentHandler = (
+        <HomeownerContainer>
+          <HomeownerHeader>Do you own your home?</HomeownerHeader>
+          <HomeownerSelectionContainer>
+            <Homeowner onClick={() => sumbitHomeowner("yes")}>
+              <CheckIcon
+                style={{
+                  color: "green",
+                  fontSize: "100px",
+                }}
+              ></CheckIcon>
+              <div>Yes</div>
+            </Homeowner>
+            <Homeowner onClick={() => sumbitHomeowner("no")}>
+              <ClearIcon
+                style={{
+                  color: "red",
+                  fontSize: "90px",
+                }}
+              ></ClearIcon>
+              <div>No</div>
+            </Homeowner>
+          </HomeownerSelectionContainer>
+          <ErrorMessageText>{errorMessage}</ErrorMessageText>
+        </HomeownerContainer>
+      );
+      break;
+
     default:
       formContentHandler = (
         <ZipcodeContainer>
@@ -184,6 +244,8 @@ function App() {
                 value={zipCode}
                 onChange={(e) => numbersOnly(e.target.value)}
               />
+
+              <ErrorMessageText>{errorMessage}</ErrorMessageText>
               <ZipCodeFormSubmit onClick={() => submitZipcode()}>
                 Free Quote
               </ZipCodeFormSubmit>
