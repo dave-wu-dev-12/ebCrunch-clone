@@ -45,6 +45,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Slider from "@material-ui/core/Slider";
 import CheckIcon from "@material-ui/icons/Check";
 import ClearIcon from "@material-ui/icons/Clear";
+import axios from "axios";
 
 const useStyles = makeStyles({
   root: {
@@ -129,10 +130,8 @@ function App() {
 
     setTheme(chosenTheme);
   };
-
-  const [zipCode, setZipCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [zipCode, setZipCode] = useState("");
   const [viewToShow, setViewToShow] = useState(VIEWS.zipcode);
   const [powerBillValue, setPowerBillValue] = useState("0");
 
@@ -145,8 +144,18 @@ function App() {
     if (zipCode.length != 5) {
       setErrorMessage("Invalid zipcode");
     } else {
-      setErrorMessage("");
-      setViewToShow(VIEWS.powerBill);
+      let requestBody = {};
+      requestBody.zipcode = zipCode;
+
+      axios
+        .post("http://localhost:5000/api/powerBill/", requestBody)
+        .then((res) => {
+          setErrorMessage("");
+          setViewToShow(VIEWS.powerBill);
+        })
+        .catch((error) => {
+          setErrorMessage(error.response.data.message);
+        });
     }
   };
 
@@ -154,7 +163,7 @@ function App() {
     setViewToShow(VIEWS.homeOwner);
   };
 
-  const sumbitHomeowner = (selection) => {
+  const submitHomeowner = (selection) => {
     if (selection == "no") {
       setErrorMessage("Sorry, you must be a homeowner to qualify");
     } else {
@@ -193,7 +202,7 @@ function App() {
         <HomeownerContainer>
           <HomeownerHeader>Do you own your home?</HomeownerHeader>
           <HomeownerSelectionContainer>
-            <Homeowner onClick={() => sumbitHomeowner("yes")}>
+            <Homeowner onClick={() => submitHomeowner("yes")}>
               <CheckIcon
                 style={{
                   color: "green",
@@ -202,7 +211,7 @@ function App() {
               ></CheckIcon>
               <div>Yes</div>
             </Homeowner>
-            <Homeowner onClick={() => sumbitHomeowner("no")}>
+            <Homeowner onClick={() => submitHomeowner("no")}>
               <ClearIcon
                 style={{
                   color: "red",
